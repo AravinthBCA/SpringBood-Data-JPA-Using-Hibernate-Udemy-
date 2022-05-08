@@ -17,8 +17,9 @@ public class BankAccountServiceImpl implements BankAccountService {
 	BankAccountRepository bankRepo;
 	
 	@Override
-	@Transactional //the below method throw any exception means method did do everything will be
-// rollbacked automatically, not mention means amount will be debited but not credit to another account
+	@Transactional //the below method throw any exception means will be debited but not credit to 
+//another account, because of using @Transactional annotation in between throw any exception it 
+// rollbacked automatically
 	public void transfer(int amount) {
 		BankAccount aravinth = bankRepo.findById(1).get();
 		aravinth.setBal(aravinth.getBal()-amount);
