@@ -61,7 +61,8 @@ public class PatientController {
 		return patientRepo.save(patient);
 	}
 
-	//it return the oldest report
+	//it return the oldest report 
+	//get all clinical data record and validate the record what we need in below method
 	@RequestMapping(value = "/patients/analyze/{id}", method = RequestMethod.GET)
 	public Patient analyze(@PathVariable("id") int id) {
 		Patient patient = patientRepo.findById(id).get();
@@ -93,6 +94,7 @@ public class PatientController {
 	}
 	
 	//it return the latest report details
+	//get all clinical data record and validate the record what we need in below method
 	@RequestMapping(value = "/patients/analyzes/{id}", method = RequestMethod.GET)
 	public Patient analyzes(@PathVariable("id") int id) {
 		Patient patient = patientRepo.findById(id).get();
@@ -128,4 +130,35 @@ public class PatientController {
 		filters.clear();
 		return patient;
 	}
+	
+	//it return the latest report details
+	//get the particular record from database so don't need do any validation in below method
+	@RequestMapping(value = "/patients/analyzess/{id}", method = RequestMethod.GET)
+	public Patient analyzess(@PathVariable("id") int id) {
+		Patient patient = patientRepo.findById(id).get();
+		ClinicalData bp = clinicalRepo.findMaxClinicalDataByPatientIdAndComponentName("bp",id);
+		ClinicalData heartrate = clinicalRepo.findMaxClinicalDataByPatientIdAndComponentName("heartrate",id);
+		ClinicalData hw = clinicalRepo.findMaxClinicalDataByPatientIdAndComponentName("hw",id);
+		try {
+			List<ClinicalData> list = new ArrayList<>();
+			list.add(bp);
+			list.add(heartrate);
+			list.add(hw);
+			String[] heightAndWeight = hw.getComponentValue().split("/");
+			if (heightAndWeight != null && heightAndWeight.length > 1) {
+				float heightInMeters = Float.parseFloat(heightAndWeight[0]) * 0.4536F;
+				float bmi = Float.parseFloat(heightAndWeight[1]) / (heightInMeters * heightInMeters);
+				ClinicalData bmiData = new ClinicalData();
+				bmiData.setComponentName("bmi");
+				bmiData.setComponentValue(Float.toString(bmi));
+				list.add(bmiData);
+			}
+			patient.setClinicalDataList(list);
+		}
+		catch(Exception e) {
+			System.out.println("Null Error");
+		}
+		return patient;
+	}
+	
 }

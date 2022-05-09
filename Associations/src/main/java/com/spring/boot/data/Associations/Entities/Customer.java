@@ -18,6 +18,7 @@ public class Customer {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String name;
+	
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
 	private Set<PhoneNumber> numbers;
 

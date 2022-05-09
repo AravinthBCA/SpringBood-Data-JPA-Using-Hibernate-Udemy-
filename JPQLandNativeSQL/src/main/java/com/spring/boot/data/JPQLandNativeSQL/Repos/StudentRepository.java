@@ -19,7 +19,7 @@ public interface StudentRepository extends CrudRepository<Student, Long> {
 	@Query("select st.firstName,st.lastName from Student st")
 	List<Object[]> findAllStudentsPartialData();
 	
-	@Query("from Student where firstName = :firstName") // : reprenset named query parameter
+	@Query("from Student where firstName = :firstName") // : represented named query parameter
 	List<Student> findAllStudentsByFirstName(@Param("firstName") String firstName);
 
 	@Query("from Student where score > :min and score <= :max")
